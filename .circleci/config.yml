@@ -52,21 +52,21 @@ jobs:
               - "ansible-inventory"
        - run: cat inventory
 
-configure_infrastructure: 
-  docker:
-    - image: python:3.7-alpine3.11
-  steps:
-    - checkout
-    - add_ssh_keys:
-            fingerprints: ["c2:0a:4e:f2:1c:03:83:5c:ca:1f:5f:75:3a:1e:20:c8"] 
-    - run:
-        name: Install Ansible
-        command: |
-          apk add --update ansible
-    - run:
-        name: Run Playbook and Configure server
-        command: |
-          ansible-playbook -i inventory main.yml -
+  configure_infrastructure: 
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+              fingerprints: ["c2:0a:4e:f2:1c:03:83:5c:ca:1f:5f:75:3a:1e:20:c8"] 
+      - run:
+          name: Install Ansible
+          command: |
+            apk add --update ansible
+      - run:
+          name: Run Playbook and Configure server
+          command: |
+            ansible-playbook -i inventory main.yml 
 
 workflows:
   ansible-circleci-infra:
