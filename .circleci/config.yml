@@ -85,7 +85,8 @@ jobs:
         - checkout
         - run:
            name: smoke Testing
-           command: return 1
+           command: |
+            return 1
         - destroy_stack_rollback
 
 workflows:
@@ -99,4 +100,6 @@ workflows:
       #    requires:
       #      - get-ec2-ips
       # - configure_infrastructure
-      - smoke_testing
+      - smoke_testing:
+          requires:
+           -  create_infra_ec2
