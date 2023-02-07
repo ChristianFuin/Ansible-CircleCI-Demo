@@ -12,7 +12,11 @@ commands:
    destroy_stack_rollback:
        description: "Detroy a Cloudformation Stack in case of fail to keep costs down"
        steps:
-          - run: aws cloudformation delete-stack --stack-name ec2-infra-${CIRCLE_WORKFLOW_ID:0:5}
+          - run: 
+              name: Destroy Environment
+              when: on_fail  
+              command: |
+                aws cloudformation delete-stack --stack-name ec2-infra-${CIRCLE_WORKFLOW_ID:0:5}
 jobs:
   create_infra_ec2:
       docker: 
@@ -82,8 +86,7 @@ jobs:
         - run:
            name: smoke Testing
            command: return 1
-        - destroy_stack_rollback 
-          when: on_fail
+        - destroy_stack_rollback
 
 workflows:
   ansible-circleci-infra:
