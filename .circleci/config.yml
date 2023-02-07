@@ -34,18 +34,17 @@ jobs:
           command: echo '[servers]' > inventory
       - append_ips_to_inventory:
           to: 'udacity'
-      - save_cache:
-          paths:
-            - "inventory"
-          key: "ansible-inventory"
+      - persist_to_workspace:
+            root: ~/
+            paths:
+              - "inventory"
 
   print_ec2-ips:
      docker:
        - image: circleci/node:13.8.0
      steps:
-       - restore_cache:
-           keys: 
-              - "ansible-inventory"
+       - attach_workspace:
+           at: ~/
        - run: cat inventory
 
 workflows:
