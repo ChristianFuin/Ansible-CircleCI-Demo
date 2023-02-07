@@ -69,6 +69,22 @@ jobs:
           command: |
             ansible-playbook -i inventory main.yml 
 
+  smoke_testing:
+     docker:
+        - image: alpine:latest
+     steps:
+        - run: apk add --update curl
+        - run:
+           name: smoke Testing
+           command: |
+              URL="https://blog.udacity.com/"
+              if curl -s --head ${URL}
+              then
+                return 0
+              else
+                return 1
+              fi  
+
 workflows:
   ansible-circleci-infra:
     jobs:
@@ -79,4 +95,5 @@ workflows:
       #- print_ec2-ips:
       #    requires:
       #      - get-ec2-ips
-      - configure_infrastructure
+      # - configure_infrastructure
+      - smoke_testing
