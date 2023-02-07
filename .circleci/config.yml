@@ -40,12 +40,12 @@ jobs:
           key: "ansible-inventory"
 
    print_ec2-ips:
-    docker:
-        - image: circleci/node:13.8.0
-    steps:
+       docker:
+         - image: circleci/node:13.8.0
+       steps:
         - restore_cache:
-            keys: 
-              - "ansible-inventory"
+          keys: 
+            - "ansible-inventory"
         - run: cat inventory
 
 workflows:
