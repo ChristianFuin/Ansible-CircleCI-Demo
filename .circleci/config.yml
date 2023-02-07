@@ -23,7 +23,7 @@ jobs:
                --region us-east-1
   get-ec2-ips:
    docker:
-      - image: circleci/node:13.8.0
+      - image: amazon/aws-cli
    steps:
       - checkout
       - run:
