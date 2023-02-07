@@ -21,7 +21,6 @@ jobs:
                --template-file ec2-template.yml \
                --stack-name ec2-infra-${CIRCLE_WORKFLOW_ID:0:5} \
                --region us-east-1
-
   get-ec2-ips:
    docker:
       - image: circleci/node:13.8.0
@@ -55,7 +54,7 @@ workflows:
       - create_infra_ec2
       - get-ec2-ips:
          requires:
-           - "create_infra_ec2"
+           - create_infra_ec2
       - print_ec2-ips:
           requires:
-            - "get-ec2-ips"
+            - get-ec2-ips
