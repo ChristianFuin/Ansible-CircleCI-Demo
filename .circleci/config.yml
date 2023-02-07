@@ -79,12 +79,10 @@ jobs:
         - image: amazon/aws-cli
      steps:
         - checkout
-        - run: apk add --update curl
         - run:
            name: smoke Testing
-           command: |
-              return 1
-        - destroy_stack_rollback
+           command: return 1
+        - destroy_stack_rollback 
           when: on_fail
 
 workflows:
