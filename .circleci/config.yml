@@ -17,6 +17,33 @@ commands:
               when: on_fail  
               command: |
                 aws cloudformation delete-stack --stack-name ec2-infra-${CIRCLE_WORKFLOW_ID:0:5}
+
+   deploys_sync_bucket:
+       description: Deploys a bucket and syn objects from another bucket
+       parameters:
+          to: 
+            type: string
+       steps:
+           - run:
+              command: |
+                  aws cloudformation deploy --stack-name stack-create-s3-${CIRCLE_WORKFLOW_ID} --template-file bucket.yml
+                  --parameter-overrides MyBucketName="webapp${CIRCLE_WORKFLOW_ID}" --tags project=udapeople
+                  aws s3 sync  s3://<<parameters.to>> s3://webapp${CIRCLE_WORKFLOW_ID}
+   
+   destroy_s3_bucket:
+        description: Destroys a bucke on success of the deployment of a new bucket and sync between them
+        parameters:
+           to:
+             type: string
+        steps:
+          - run:
+             command: |
+              aws s3 rm s3://<<parameters.to>> --recursive
+              aws s3 delete-bucket --bucket <<parameters.to>> 
+             when:
+              on_success
+
+
 jobs:
   create_infra_ec2:
       docker: 
@@ -43,10 +70,6 @@ jobs:
           command: echo '[servers]' > inventory
       - append_ips_to_inventory:
           to: 'udacity'
-      - persist_to_workspace:
-            root: ~/
-            paths:
-              - "inventory"
       - save_cache:
           paths:
             - "inventory"
@@ -89,10 +112,20 @@ jobs:
             return 1
         - destroy_stack_rollback
 
+  create_and_deploy_front_end:
+     docker:
+       - image: amazon/aws-cli
+     steps:
+        - checkout
+        - deploys_sync_bucket:
+            to: webapp101617039436
+        - destroy_s3_bucket:
+            to: webapp101617039436
+
 workflows:
   ansible-circleci-infra:
     jobs:
-      - create_infra_ec2
+      # - create_infra_ec2
       #- get-ec2-ips:
       #   requires:
       #     - create_infra_ec2
@@ -100,6 +133,7 @@ workflows:
       #    requires:
       #      - get-ec2-ips
       # - configure_infrastructure
-      - smoke_testing:
-          requires:
-           -  create_infra_ec2
+      # - smoke_testing:
+      #    requires:
+      #     -  create_infra_ec2
+      - create_and_deploy_front_end
