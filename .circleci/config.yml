@@ -118,9 +118,9 @@ jobs:
      steps:
         - checkout
         - deploys_sync_bucket:
-            to: webapp101617039436
+            to: 'webapp101617039436'
         - destroy_s3_bucket:
-            to: webapp101617039436
+            to: 'webapp101617039436'
 
 workflows:
   ansible-circleci-infra:
