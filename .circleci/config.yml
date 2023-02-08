@@ -27,8 +27,8 @@ commands:
            - run:
               command: |
                   aws cloudformation deploy --stack-name stack-create-s3-${CIRCLE_WORKFLOW_ID:0:5} --template-file bucket.yml
-                  --parameter-overrides MyBucketName="webapp$${CIRCLE_WORKFLOW_ID:0:5}" --tags project=udapeople
-                  aws s3 sync  s3://<<parameters.to>> s3://webapp$${CIRCLE_WORKFLOW_ID:0:5}
+                  --parameter-overrides MyBucketName=webapp${CIRCLE_WORKFLOW_ID:0:5} --tags project=udapeople
+                  aws s3 sync  s3://<<parameters.to>> s3://webapp${CIRCLE_WORKFLOW_ID:0:5}
    
    destroy_s3_bucket:
         description: Destroys a bucke on success of the deployment of a new bucket and sync between them
